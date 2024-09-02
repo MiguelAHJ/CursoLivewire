@@ -3,5 +3,5 @@
     <p>{{$name}}</p>
     <p>{{$email}}</p> --}}
 
-    <input type="text" wire:model="name">
+    <input type="text" wire:model="email">
 </div>
