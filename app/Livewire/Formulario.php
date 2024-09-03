@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Forms\PostCreateForm;
+use App\Livewire\Forms\PostEditForm;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -12,22 +14,10 @@ class Formulario extends Component
 
     public $categories, $tags;
 
-    public $category_id = '', $title, $content;
-
-    public $selectedTags = [];
+    public PostCreateForm $postCreate;
+    public PostEditForm $postEdit;
 
     public $posts;
-
-    public $open = false;
-
-    public $postEditId = '';
-
-    public $postEdit = [
-        'category_id' => '',
-        'title' => '',
-        'content' => '',
-        'tags' => []
-    ];
 
     public function mount(){
         $this->categories = Category::all();
@@ -37,53 +27,20 @@ class Formulario extends Component
 
     public function save(){
 
-        $this->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'category_id' => 'required|exists:categories_id',
-            'selectedTags' => 'required|array|min:1'
-        ], [
-            'selectedTags.required' => 'Se requiere la selección de al menos una etiqueta'
-        ], [
-            'category_id' => 'categoria',
-            'content' => 'contenido',
-            'title' => 'título'
-        ]);
-
-        $post = Post::create(
-            $this->only('category_id', 'title', 'content')
-        );
-
-        $post->tags()->attach($this->selectedTags);
-
-        $this->reset(['category_id', 'title', 'content', 'selectedTags']);
+        $this->postCreate->save();
         $this->posts = Post::all();
+
     }
 
     public function edit($postId){
-        $this->open = true;
 
-        $this->postEditId = $postId;
-        $post = Post::find($postId);
+        $this->resetValidation();
+        $this->postEdit->edit($postId); 
 
-        $this->postEdit['category_id'] = $post->category_id;
-        $this->postEdit['title'] = $post->title;
-        $this->postEdit['content'] = $post->content;
-        $this->postEdit['tags'] = $post->tags->pluck('id')->toArray();
     }
 
     public function update(){
-        $post = Post::find($this->postEditId);
-
-        $post->update([
-            'category_id' => $this->postEdit['category_id'],
-            'title' => $this->postEdit['title'],
-            'content' => $this->postEdit['content']
-        ]);
-
-        $post->tags()->sync($this->postEdit['tags']);
-
-        $this->reset(['postEditId', 'postEdit', 'open']);
+        $this->postEdit->update();
         $this->posts = Post::all();
     }
 

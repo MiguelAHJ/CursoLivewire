@@ -7,22 +7,22 @@
                 <x-label>
                     Título
                 </x-label>
-                <x-input class="w-full" wire:model="title"/>
-                <x-input-error for="title"/>
+                <x-input class="w-full" wire:model.live="postCreate.title"/>
+                <x-input-error for="postCreate.title"/>
             </div>
             <div class="mb-4">
                 <x-label>
                     Contenido
                 </x-label>
-                <x-textarea class="w-full" wire:model="content"></x-textarea>
-                <x-input-error for="content"/>
+                <x-textarea class="w-full" wire:model="postCreate.content"></x-textarea>
+                <x-input-error for="postCreate.content"/>
             </div>
             <div class="mb-4">
 
                 <x-label>
                     Categoria
                 </x-label>
-                <x-select class="w-full" wire:model="category_id">
+                <x-select class="w-full" wire:model="postCreate.category_id">
                     <option value="">
                         Seleccione una categoría
                     </option>
@@ -32,7 +32,7 @@
                         </option>
                     @endforeach
                 </x-select>
-                <x-input-error for="category_id"/>
+                <x-input-error for="postCreate.category_id"/>
             </div>
 
             <div class="mb-4">
@@ -43,13 +43,13 @@
                     @foreach ($tags as $tag)
                         <li>
                             <label>
-                                <x-checkbox wire:model="selectedTags" value="{{$tag->id}}" />
+                                <x-checkbox wire:model="postCreate.tags" value="{{$tag->id}}" />
                                 {{$tag->name}}
                             </label>
                         </li>
                     @endforeach
                 </ul>
-                <x-input-error for="selectedTags"/>
+                <x-input-error for="postCreate.tags"/>
             </div>
             <div class="flex justify-end">
                 <x-button>
@@ -75,7 +75,7 @@
     </div>
     {{-- Formulario de edición --}}
     <form wire:submit="update">
-        <x-dialog-modal wire:model="open">
+        <x-dialog-modal wire:model="postEdit.open">
             <x-slot name="title">
                 Actualizar post
             </x-slot>
@@ -127,7 +127,7 @@
             </x-slot>
             <x-slot name="footer">
                 <div class="flex justify-end">
-                    <x-danger-button class="mr-2" wire:click="$set('open', false)">
+                    <x-danger-button class="mr-2" wire:click="$set('postEdit.open', false)">
                         Cancelar
                     </x-danger-button>
                     <x-button>
