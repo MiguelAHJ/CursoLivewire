@@ -19,6 +19,11 @@ class CreatePost extends Component
             $user->only(['name', 'email'])
         );
     }
+
+    public function save(){
+        // dd($this->name);
+    }
+
     public function render()
     {
         return view('livewire.create-post');
