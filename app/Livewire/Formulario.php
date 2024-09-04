@@ -30,7 +30,7 @@ class Formulario extends Component
         $this->postCreate->save();
         $this->posts = Post::all();
 
-        $this->dispatch('post-created');
+        $this->dispatch('new-action', 'Nuevo atículo creado');
 
     }
 
@@ -44,12 +44,16 @@ class Formulario extends Component
     public function update(){
         $this->postEdit->update();
         $this->posts = Post::all();
+
+        $this->dispatch('new-action', 'Artículo actualizado');
     }
 
     public function destroy($postId){
         $post = Post::find($postId);
         $post->delete();
         $this->posts = Post::all();
+
+        $this->dispatch('new-action', 'Artículo eliminado');
     }
 
     public function render()
