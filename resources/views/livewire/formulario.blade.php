@@ -4,7 +4,9 @@
 
 
         @if ($postCreate->image)
-            <img src="{{$postCreate->image->temporaryUrl()}}" alt="">
+            <div class="w-full flex justify-center">
+                <img class="rounded-full w-32 h-32 object-cover" src="{{$postCreate->image->temporaryUrl()}}" alt="">
+            </div>
         @endif
 
         <form wire:submit="save">
@@ -53,8 +55,22 @@
                     x-on:livewire-upload-progress="progress = $event.detail.progress"
                 >
                     <input type="file" wire:model.live="postCreate.image" wire:key="{{$postCreate->imageKey}}"/>
-                    <div x-show="isUploading">
-                        <progress max="100" x-bind:value="progress"></progress>
+                    
+                    <div class="flex justify-center items-center mt-2" x-show="isUploading">
+                        <!-- Barra de progreso personalizada -->
+                        <div class="bg-blue-300 border border-gray-300 rounded-sm h-5 w-full relative">
+                            <div class="bg-blue-500 rounded-sm h-full text-xs font-bold text-white" 
+                                 x-bind:style="'width: ' + progress + '%'" 
+                                 x-bind:class="{'transition-all': isUploading}">
+                            </div>
+                            <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center text-white text-sm font-bold">
+                                <span x-text="progress + '%'">dsadaasd</span> <!-- Usar x-text para mostrar el porcentaje -->
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Texto de progreso -->
+                        {{-- <span class="ml-2 text-sm text-gray-600" x-bind:style="'width: ' + progress + '%'"></span> --}}
                     </div>
                 </div>
                 <x-input-error for="postCreate.image"/>
@@ -77,26 +93,34 @@
                 <x-input-error for="postCreate.tags"/>
             </div>
             <div class="flex justify-end">
-                <x-button>
+                <x-button wire:loading.attr="disabled" wire:loading.class="opacity-25">
                     Crear
                 </x-button>
             </div>
         </form>
-
+        <div wire:loading wire:target="save">
+            <p>Procesando ...</p>
+        </div>
     </div>
 
-    <div class="bg-white shadow roundelg p-6">
-        <ul class="list-disc list-inside space-y-2">
+    <div class="bg-white shadow rounded-lg p-6" >
+        <div class="mb-4">
+            <x-input class="w-full" placeholder="Buscar ..." wire:model.live="search"/>
+        </div>
+        <ul class="list-disc list-inside space-y-2" >
             @foreach ($posts as $post)
-                <li class="flex justify-between" wire:key="post-{{$post->id}}">
+                <li class="flex justify-between" wire:key="post-{{$post->id}}" >
                     {{$post->title}}
-                    <div>
+                    <div >
                         <x-button wire:click="edit({{$post->id}})">Editar</x-button>
                         <x-danger-button wire:click="destroy({{$post->id}})">Eliminar</x-danger-button>
                     </div>
                 </li>
             @endforeach
         </ul>
+        <div class="mt-4">
+            {{$posts->links(data: ['scrollTo' => false])}}
+        </div>
     </div>
     {{-- Formulario de edición --}}
     <form wire:submit="update">

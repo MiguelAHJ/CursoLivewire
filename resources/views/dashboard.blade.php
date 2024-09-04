@@ -14,6 +14,8 @@
                 @livewire('comments')
             </div>
 
+            {{-- @livewire('computed') --}}
+
         </div>
     </div>
 </x-app-layout>
